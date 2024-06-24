@@ -51,6 +51,7 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(pkgconfig)
+add_subdirectory(test)
 
 # cmake config files
 if (WIN32)
