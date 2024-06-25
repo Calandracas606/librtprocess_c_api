@@ -84,11 +84,21 @@ int main(void) {
   }
   std::cout << "test 14\n";
 
-  rcd_demosaic(w, h, rawdata.data(), red.data(), green.data(), blue.data(),
-               cfarray, [](double progress) {
-                 std::cout << "Progress " << progress << "\n";
-                 return false;
-               });
+  // rcd_demosaic(w, h, rawdata.data(), red.data(), green.data(), blue.data(),
+  //              cfarray, [](double progress) {
+  //                std::cout << "Progress " << progress << "\n";
+  //                return false;
+  //              });
+
+  auto err = amaze_demosaic(
+      w, h, lr.imgdata.sizes.left_margin, lr.imgdata.sizes.top_margin, w, h,
+      rawdata.data(), red.data(), green.data(), blue.data(), cfarray,
+      [](double progress) -> bool {
+        std::cerr << "amaze progress: " << progress << "\n";
+        return false;
+      },
+      1, 0, 1, 1, 2, true);
+
   std::cout << "test 15\n";
 
   float **img[3] = {red.data(), green.data(), blue.data()};
@@ -97,3 +107,9 @@ int main(void) {
   tiff_dump(img, w, h, "out.tiff");
   std::cout << "test 17\n";
 }
+// RTPROCESS_API rpError amaze_demosaic(int raw_width, int raw_height, int winx,
+// int winy, int winw, int winh, const float * const *rawData, float **red,
+// float **green, float **blue, const unsigned cfarray[2][2], const
+// std::function<bool(double)> &setProgCancel, double initGain, int border,
+// float inputScale, float outputScale, std::size_t chunkSize = 2, bool measure
+// = false);
