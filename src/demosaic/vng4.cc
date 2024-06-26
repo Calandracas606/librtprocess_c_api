@@ -221,7 +221,7 @@ rpError vng4_demosaic (int width, int height, const float * const *rawData, floa
 
                     *ipp++ = (y1 * width + x1) * 4 + color;
                     *ipp++ = (y2 * width + x2) * 4 + color;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                     // at least on machines with SSE2 feature this cast is save
                     *reinterpret_cast<float*>(ipp++) = 1 << weight;
 #else
@@ -280,7 +280,7 @@ rpError vng4_demosaic (int width, int height, const float * const *rawData, floa
                     float gval[8] = {};
 
                     while (ip[0] != INT_MAX) {        /* Calculate gradients */
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                         // at least on machines with SSE2 feature this cast is save and saves a lot of int => float conversions
                         const float diff = std::fabs(pix[ip[0]] - pix[ip[1]]) * reinterpret_cast<float*>(ip)[2];
 #else

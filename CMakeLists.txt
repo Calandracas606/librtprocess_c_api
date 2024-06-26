@@ -39,6 +39,13 @@ include(GNUInstallDirs)
 include(CMakePackageConfigHelpers)
 include(CPackConfig.cmake)
 
+if(OPTION_SMID)
+	add_compile_definitions(RTP_SMID)
+	if(OPTION_SSE2)
+		add_compile_definitions(RTP_SSE2)
+	endif()
+endif()
+
 # By default we don't use a specific processor target, so PROC_TARGET_NUMBER is set to 0.
 # Specify other values to optimize for specific processor architecture as listed in ProcessorTargets.cmake:
 set(PROC_TARGET_NUMBER 0 CACHE STRING "Selected target processor from the list taken from ProcessorTargets.cmake")

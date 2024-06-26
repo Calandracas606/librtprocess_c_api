@@ -177,7 +177,7 @@ template<class T, class A> void boxblur (T** src, A** dst, T* buffer, int radx, 
             }
     } else {
         const int numCols = 8; // process numCols columns at once for better usage of L1 cpu cache
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         vfloat  leninitv = F2V( (float)(rady + 1));
         vfloat  onev = F2V( 1.f );
         vfloat  tempv, temp1v, lenv, lenp1v, lenm1v, rlenv;
@@ -358,7 +358,7 @@ template<class T, class A> void boxblur (T* src, A* dst, A* buffer, int radx, in
             }
     } else {
         //vertical blur
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         vfloat  leninitv = F2V( (float)(rady + 1));
         vfloat  onev = F2V( 1.f );
         vfloat  tempv, temp1v, lenv, lenp1v, lenm1v, rlenv;
@@ -545,7 +545,7 @@ template<class T, class A> void boxabsblur (T* src, A* dst, int radx, int rady, 
             }
     } else {
         //vertical blur
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         vfloat  leninitv = F2V( (float)(rady + 1));
         vfloat  onev = F2V( 1.f );
         vfloat  tempv, lenv, lenp1v, lenm1v, rlenv;

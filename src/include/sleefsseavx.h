@@ -18,6 +18,7 @@
 
 #include <assert.h>
 #include "rt_math.h"
+#ifdef RTP_SSE2
 #ifdef __SSE2__
 #include "helpersse2.h"
 
@@ -1432,4 +1433,5 @@ static INLINE void vconvertrgbrgbrgbrgb2rrrrggggbbbb (const float * src, vfloat 
 }
 
 #endif // __SSE2__
+#endif // RTP_SSE2
 #endif // SLEEFSSEAVX

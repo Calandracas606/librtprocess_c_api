@@ -62,7 +62,7 @@ void cielab (const float (*rgb)[3], float* l, float* a, float *b, const int widt
         return;
     }
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
     vfloat c116v = F2V(116.f);
     vfloat c16v = F2V(16.f);
     vfloat c500v = F2V(500.f);
@@ -78,7 +78,7 @@ void cielab (const float (*rgb)[3], float* l, float* a, float *b, const int widt
 
     for(int i = 0; i < height; i++) {
         int j = 0;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 
         for(; j < labWidth - 3; j += 4) {
             vfloat redv, greenv, bluev;
@@ -640,7 +640,7 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
                         // camera RGB is roughly linear.
                         for (int d = 0; d < ndir; d++) {
                             float (*yuv)[ts - 8][ts - 8] = lab; // we use the lab buffer, which has the same dimensions
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat zd2627v = F2V(0.2627f);
                             vfloat zd6780v = F2V(0.6780f);
                             vfloat zd0593v = F2V(0.0593f);
@@ -650,7 +650,7 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
 
                             for (int row = 4; row < mrow - 4; row++) {
                                 int col = 4;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 
                                 for (; col < mcol - 7; col += 4) {
                                     // use ITU-R BT.2020 YPbPr, which is great, but could use
@@ -695,7 +695,7 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
                     }
 
                     /* Build homogeneity maps from the derivatives:         */
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                     vfloat eightv = F2V(8.f);
                     vfloat zerov = F2V(0.f);
                     vfloat onev = F2V(1.f);
@@ -703,7 +703,7 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
 
                     for (int row = 6; row < mrow - 6; row++) {
                         int col = 6;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 
                         for (; col < mcol - 9; col += 4) {
                             vfloat tr1v = vminf(LVFU(drv[0][row - 5][col - 5]), LVFU(drv[1][row - 5][col - 5]));
@@ -778,7 +778,7 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
                     for(int d = 0; d < ndir; d++) {
                         for (int row = std::min(top, 8); row < mrow - 8; row++) {
                             int col = startcol;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             int endcol = row < mrow - 9 ? mcol - 8 : mcol - 23;
 
                             // crunching 16 values at once is faster than summing up column sums
@@ -821,13 +821,13 @@ rpError markesteijn_demosaic (int width, int height, const float * const *rawDat
                     }
 
                     // calculate maximum of homogeneity maps per pixel. Vectorized calculation is a tiny bit faster than on the fly calculation in next step
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                     vint maskv = _mm_set1_epi8(31);
 #endif
 
                     for (int row = std::min(top, 8); row < mrow - 8; row++) {
                         int col = startcol;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                         int endcol = row < mrow - 9 ? mcol - 8 : mcol - 23;
 
                         for (; col < endcol; col += 16) {

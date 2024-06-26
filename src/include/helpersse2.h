@@ -12,6 +12,7 @@
 //
 ////////////////////////////////////////////////////////////////
 
+#ifdef RTP_SSE2
 #ifndef __SSE2__
 #error Please specify -msse2.
 #endif
@@ -545,3 +546,4 @@ static INLINE vdouble2 abs_d(vdouble2 x)
     return dd((__m128d)_mm_xor_pd(_mm_and_pd(_mm_set_pd(-0.0, -0.0), x.x), x.x),
               (__m128d)_mm_xor_pd(_mm_and_pd(_mm_set_pd(-0.0, -0.0), x.x), x.y));
 }
+#endif // RTP_SSE2

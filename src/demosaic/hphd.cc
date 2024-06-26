@@ -48,7 +48,7 @@ rpError hphd_vertical(const float * const *rawData, float** hpmap, int col_from,
     }
 
     int k = col_from;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
     const vfloat ninev = F2V(9.f);
     const vfloat epsv = F2V(0.001f);
 #endif
@@ -63,7 +63,7 @@ rpError hphd_vertical(const float * const *rawData, float** hpmap, int col_from,
         }
 
         for (int j = 4; j < H - 4; j++) {
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
             // faster than #pragma omp simd...
             const vfloat avgL1 = ((LVFU(temp[j - 4][0]) + LVFU(temp[j - 3][0])) + (LVFU(temp[j - 2][0]) + LVFU(temp[j - 1][0])) + (LVFU(temp[j][0]) + LVFU(temp[j + 1][0])) + (LVFU(temp[j + 2][0]) + LVFU(temp[j + 3][0])) + LVFU(temp[j + 4][0])) / ninev;
             STVFU(avg[j][0], avgL1);
@@ -131,7 +131,7 @@ rpError hphd_horizontal(const float * const *rawData, float** hpmap, int row_fro
         rc = RP_MEMORY_ERROR;
     } else {
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         const vfloat onev = F2V(1.f);
         const vfloat twov = F2V(2.f);
         const vfloat zd8v = F2V(0.8f);
@@ -154,7 +154,7 @@ rpError hphd_horizontal(const float * const *rawData, float** hpmap, int row_fro
             }
 
             int j = 5;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
             // faster than #pragma omp simd
             for (; j < W - 8; j+=4) {
                 const vfloat avgL = LVFU(avg[j - 1]);

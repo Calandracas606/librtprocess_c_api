@@ -325,7 +325,7 @@ rpError CA_correct(
                             // rgb values should be floating point numbers between 0 and 1
                             // after white balance multipliers are applied
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat cinScalev = F2V(inputScale);
 #endif
 
@@ -333,7 +333,7 @@ rpError CA_correct(
                                 int row = rr + top;
                                 int cc = ccmin;
                                 int col = cc + left;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 int c0 = fc(cfarray, rr, cc);
                                 if(c0 == 1) {
                                     rgb[c0][rr * ts + cc] = rawDataOut[row][col] / inputScale;
@@ -428,7 +428,7 @@ rpError CA_correct(
                             //end of initialization
 
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat onev = F2V(1.f);
                             vfloat epsv = F2V(eps);
 #endif
@@ -437,7 +437,7 @@ rpError CA_correct(
                                 int cc = 3 + (fc(cfarray, rr,3) & 1);
                                 int indx = rr * ts + cc;
                                 int c = fc(cfarray, rr,cc);
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 for (; cc < cc1 - 9; cc+=8, indx+=8) {
                                     //compute directional weights using image gradients
                                     vfloat rgb1mv1v = LC2VFU(rgb[1][indx - v1]);
@@ -473,7 +473,7 @@ rpError CA_correct(
                                     int offset = (fc(cfarray, row,std::max(left + 3, 0)) & 1);
                                     int col = std::max(left + 3, 0) + offset;
                                     int indx1 = rr * ts + 3 - (left < 0 ? (left+3) : 0) + offset;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                     for(; col < std::min(cc1 + left - 3, width) - 7; col+=8, indx1+=8) {
                                         STVFU(Gtmp[(row * width + col) >> 1], LC2VFU(rgb[1][indx1]));
                                     }
@@ -485,14 +485,14 @@ rpError CA_correct(
 
                             }
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat zd25v = F2V(0.25f);
 #endif
                             for (int rr = 4; rr < rr1 - 4; rr++) {
                                 int cc = 4 + (fc(cfarray, rr, 2) & 1);
                                 int indx = rr * ts + cc;
                                 int c = fc(cfarray, rr, cc);
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 for (; cc < cc1 - 10; cc += 8, indx += 8) {
                                     vfloat rgb1v = LC2VFU(rgb[1][indx]);
                                     vfloat rgbcv = LVFU(rgb[c][indx >> 1]);
@@ -547,7 +547,7 @@ rpError CA_correct(
                                 }
                             }
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat zd3v = F2V(0.3f);
                             vfloat zd1v = F2V(0.1f);
                             vfloat zd5v = F2V(0.5f);
@@ -559,7 +559,7 @@ rpError CA_correct(
                                 int cc = 8 + (fc(cfarray, rr, 2) & 1);
                                 int indx = rr * ts + cc;
                                 int c = fc(cfarray, rr, cc);
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 vfloat coeff00v = ZEROV;
                                 vfloat coeff01v = ZEROV;
                                 vfloat coeff02v = ZEROV;
@@ -867,7 +867,7 @@ rpError CA_correct(
                             // rgb values should be floating point number between 0 and 1
                             // after white balance multipliers are applied
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat cinscalev = F2V(inputScale);
                             vmask gmask = _mm_set_epi32(0, 0xffffffff, 0, 0xffffffff);
 #endif
@@ -877,7 +877,7 @@ rpError CA_correct(
                                 int col = cc + left;
                                 int indx = row * width + col;
                                 int indx1 = rr * ts + cc;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 int c = fc(cfarray, rr, cc);
                                 if(c & 1) {
                                     rgb[1][indx1] = rawDataOut[row][col] / inputScale;
@@ -995,7 +995,7 @@ rpError CA_correct(
                             //end of border fill
 
                             if (!autoCA || fitParamsSet) {
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 const vfloat onev = F2V(1.f);
                                 const vfloat epsv = F2V(eps);
 #endif
@@ -1003,7 +1003,7 @@ rpError CA_correct(
                                 //manual CA correction; use red/blue slider values to set CA shift parameters
                                 for (int rr = 3; rr < rr1 - 3; rr++) {
                                     int cc = 3 + fc(cfarray, rr, 1), c = fc(cfarray, rr,cc), indx = rr * ts + cc;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                     for (; cc < cc1 - 10; cc += 8, indx += 8) {
                                         //compute directional weights using image gradients
                                         vfloat val1v = epsv + vabsf(LC2VFU(rgb[1][(rr + 1) * ts + cc]) - LC2VFU(rgb[1][(rr - 1) * ts + cc]));
@@ -1092,7 +1092,7 @@ rpError CA_correct(
                                 int indxff = (rr + shiftvfloor[c]) * ts + cc + shifthfloor[c];
                                 int indxcc = (rr + shiftvceil[c]) * ts + cc + shifthceil[c];
                                 int indxcf = (rr + shiftvceil[c]) * ts + cc + shifthfloor[c];
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 vfloat shifthfracv = F2V(shifthfrac[c]);
                                 vfloat shiftvfracv = F2V(shiftvfrac[c]);
                                 for (; cc < cc1 - 10; cc += 8, indxfc += 8, indxff += 8, indxcc += 8, indxcf += 8, indx += 4) {
@@ -1128,7 +1128,7 @@ rpError CA_correct(
                             shiftvfrac[0] /= 2.f;
                             shiftvfrac[2] /= 2.f;
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat zd25v = F2V(0.25f);
                             vfloat onev = F2V(1.f);
                             vfloat zd5v = F2V(0.5f);
@@ -1139,7 +1139,7 @@ rpError CA_correct(
                                 int c = fc(cfarray, rr, cc);
                                 int GRBdir0 = GRBdir[0][c];
                                 int GRBdir1 = GRBdir[1][c];
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 vfloat shifthfracc = F2V(shifthfrac[c]);
                                 vfloat shiftvfracc = F2V(shiftvfrac[c]);
                                 for (int indx = rr * ts + cc; cc < cc1 - 14; cc += 8, indx += 8) {
@@ -1213,7 +1213,7 @@ rpError CA_correct(
                                 }
                             }
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             vfloat coutScalev = F2V(outputScale);
 #endif
                             // copy CA corrected results to temporary image matrix
@@ -1223,7 +1223,7 @@ rpError CA_correct(
                                 int cc = border + (fc(cfarray, rr, 2) & 1);
                                 int indx = ((row-winy) * (winw + (winw & 1)) + cc + left - winx) >> 1;
                                 int indx1 = (rr * ts + cc) >> 1;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                                 for (; indx < ((row-winy) * (winw + (winw & 1)) + cc1 - border - 7 + left - winx) >> 1; indx+=4, indx1 += 4) {
                                     STVFU(RawDataTmp[indx], coutScalev * LVFU(rgb[c][indx1]));
                                 }
@@ -1259,7 +1259,7 @@ rpError CA_correct(
                     for(int row = cb; row < winh - cb; row++) {
                         int col = cb + (fc(cfarray, row + winy, winx) & 1);
                         int indx = (row * (winw + (winw & 1)) + col) >> 1;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                         for (; col < (winw + (winw & 1)) - 7 - cb; col += 8, indx += 4) {
                             vfloat val = LVFU(RawDataTmp[indx]);
                             STC2VFU(rawDataOut[row + winy][col + winx], val);
@@ -1282,7 +1282,7 @@ rpError CA_correct(
             #pragma omp parallel
 #endif
             {
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                 const vfloat onev = F2V(1.f);
                 const vfloat twov = F2V(2.f);
                 const vfloat zd5v = F2V(0.5f);
@@ -1295,7 +1295,7 @@ rpError CA_correct(
                     const int colour = fc(cfarray, i, firstCol);
                     JaggedArray<float>* nonGreen = colour == 0 ? redFactor.get() : blueFactor.get();
                     int j = firstCol;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                     for (; j < winw - 7 - 2 * cb; j += 8) {
                         const vfloat newvals = LC2VFU(rawDataOut[i + cb][j + cb]);
                         const vfloat oldvals = LVFU((*oldraw)[i - winy][(j - winx) / 2]);

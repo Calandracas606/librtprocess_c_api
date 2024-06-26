@@ -34,7 +34,7 @@ using namespace librtprocess;
 #define TS 224
 
 #define INVGRAD(i) (16.0f/SQR(4.0f+i))
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 #define INVGRADV(i) (c16v*_mm_rcp_ps(SQRV(fourv+i)))
 #endif
 
@@ -100,7 +100,7 @@ rpError bayerfast_demosaic(int width, int height, const float * const *rawData, 
                     const int bottom = min(top + TS, H - bord + 2);
                     const int right  = min(left + TS, W - bord + 2);
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                     const vfloat c16v = F2V(16.0f);
                     const vfloat fourv = F2V(4.0f);
                     vmask selmask;
@@ -118,7 +118,7 @@ rpError bayerfast_demosaic(int width, int height, const float * const *rawData, 
                     for (int i = top, rr = 0; i < bottom; i++, rr++) {
                         int j = left;
                         int cc = 0;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                         selmask = (vmask)_mm_andnot_ps((vfloat)selmask, (vfloat)andmask);
 
                         for (; j < right - 3; j += 4, cc += 4) {
@@ -156,14 +156,14 @@ rpError bayerfast_demosaic(int width, int height, const float * const *rawData, 
                         }
                     }
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                     const vfloat zd25v = F2V(0.25f);
                     const vfloat clip_ptv = F2V(clip_pt);
 #endif
 
                     for (int i = top + 1, rr = 1; i < bottom - 1; i++, rr++) {
                         if (fc(cfarray, i, left + (fc(cfarray, i, 2) & 1) + 1) == 0)
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             for (int j = left + 1, cc = 1; j < right - 1; j += 4, cc += 4) {
                                 //interpolate B/R colors at R/B sites
                                 STVFU(bluetile[rr * TS + cc], LVFU(greentile[rr * TS + cc]) - zd25v * ((LVFU(greentile[(rr - 1)*TS + (cc - 1)]) + LVFU(greentile[(rr - 1)*TS + (cc + 1)]) + LVFU(greentile[(rr + 1)*TS + cc + 1]) + LVFU(greentile[(rr + 1)*TS + cc - 1])) -
@@ -180,7 +180,7 @@ rpError bayerfast_demosaic(int width, int height, const float * const *rawData, 
 
 #endif
                         else
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                             for (int j = left + 1, cc = 1; j < right - 1; j += 4, cc += 4) {
                                 //interpolate B/R colors at R/B sites
                                 STVFU(redtile[rr * TS + cc], LVFU(greentile[rr * TS + cc]) - zd25v * ((LVFU(greentile[(rr - 1)*TS + cc - 1]) + LVFU(greentile[(rr - 1)*TS + cc + 1]) + LVFU(greentile[(rr + 1)*TS + cc + 1]) + LVFU(greentile[(rr + 1)*TS + cc - 1])) -
@@ -199,13 +199,13 @@ rpError bayerfast_demosaic(int width, int height, const float * const *rawData, 
                     }
 
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                     selmask = _mm_set_epi32(0xffffffff, 0, 0xffffffff, 0);
 #endif
 
                     // interpolate R/B using color differences
                     for (int i = top + 2, rr = 2; i < bottom - 2; i++, rr++) {
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 
                         for (int cc = 2 + (fc(cfarray, i, 2) & 1), j = left + cc; j < right - 2; j += 4, cc += 4) {
                             // no need to take care about the borders of the tile. There's enough free space.
@@ -242,7 +242,7 @@ rpError bayerfast_demosaic(int width, int height, const float * const *rawData, 
                     for (int i = top + 2, rr = 2; i < bottom - 2; i++, rr++) {
                         int j = left + 2;
                         int cc = 2;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                         for (; j < right - 5; j += 4, cc += 4) {
                             STVFU(red[i][j], LVFU(redtile[rr * TS + cc]));
                             STVFU(green[i][j], LVFU(greentile[rr * TS + cc]));

@@ -96,7 +96,7 @@ protected:
     unsigned int upperBound;  // always equals size-1, parameter created for performance reason
 private:
     unsigned int owner;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
     alignas(16) vfloat maxsv;
     alignas(16) vfloat sizev;
     alignas(16) vint sizeiv;
@@ -119,7 +119,7 @@ public:
         upperBound = size - 1;
         maxs = size - 2;
         maxsf = (float)maxs;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         maxsv =  F2V( maxs );
         sizeiv =  _mm_set1_epi32( (int)(size - 1) );
         sizev = F2V( size - 1 );
@@ -143,7 +143,7 @@ public:
         upperBound = size - 1;
         maxs = size - 2;
         maxsf = (float)maxs;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         maxsv =  F2V( maxs );
         sizeiv =  _mm_set1_epi32( (int)(size - 1) );
         sizev = F2V( size - 1 );
@@ -158,7 +158,7 @@ public:
     {
         data = nullptr;
         reset();
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         maxsv = ZEROV;
         sizev = ZEROV;
         sizeiv = _mm_setzero_si128();
@@ -222,7 +222,7 @@ public:
             this->upperBound = rhs.upperBound;
             this->maxs = this->size - 2;
             this->maxsf = (float)this->maxs;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
             this->maxsv =  F2V( this->size - 2);
             this->sizeiv =  _mm_set1_epi32( (int)(this->size - 1) );
             this->sizev = F2V( this->size - 1 );
@@ -286,7 +286,7 @@ public:
         return data[ librtprocess::LIM<int>(index, 0, upperBound) ];
     }
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 
 
     // NOTE: This function requires LUTs which clips only at lower bound
@@ -541,7 +541,7 @@ public:
         sum = 0.f;
         avg = 0.f;
         int i = 0;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         vfloat iv = _mm_set_ps(3.f, 2.f, 1.f, 0.f);
         vfloat fourv = F2V(4.f);
         vint sumv = (vint)ZEROV;
@@ -595,7 +595,7 @@ public:
         upperBound = size - 1;
         maxs = size - 2;
         maxsf = (float)maxs;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
         maxsv =  F2V( size - 2);
         sizeiv =  _mm_set1_epi32( (int)(size - 1) );
         sizev = F2V( size - 1 );

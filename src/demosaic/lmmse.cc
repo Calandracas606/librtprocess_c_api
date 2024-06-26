@@ -38,7 +38,7 @@ namespace {
    Adapted for RawTherapee - Jacques Desmis 04/2013
 */
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 #define CLIPV(a) LIMV(a,ZEROV,c65535v)
 #endif
 void refinement(int width, int height, float **red, float **green, float **blue, const unsigned cfarray[2][2], const std::function<bool(double)> &setProgCancel, int PassCount)
@@ -67,7 +67,7 @@ BENCHFUN
             for (int row = 2; row < height - 2; row++) {
                 int col = 2 + (fc(cfarray, row, 2) & 1);
                 int c = fc(cfarray, row, col);
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                 vfloat dLv, dRv, dUv, dDv, v0v;
                 const vfloat onev = F2V(1.f);
                 const vfloat zd5v = F2V(0.5f);
@@ -103,7 +103,7 @@ BENCHFUN
             for (int row = 2; row < height - 2; row++) {
                 int col = 2 + (fc(cfarray, row, 3) & 1);
                 int c = fc(cfarray, row, col + 1);
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                 vfloat dLv, dRv, dUv, dDv, v0v;
                 const vfloat onev = F2V(1.f);
                 const vfloat zd5v = F2V(0.5f);
@@ -142,7 +142,7 @@ BENCHFUN
             for (int row = 2; row < height - 2; row++) {
                 int col = 2 + (fc(cfarray, row, 2) & 1);
                 int c = 2 - fc(cfarray, row, col);
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
                 vfloat dLv, dRv, dUv, dDv, v0v;
                 const vfloat onev = F2V(1.f);
                 const vfloat zd5v = F2V(0.5f);
@@ -175,7 +175,7 @@ BENCHFUN
 
 }
 }
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 #undef CLIPV
 #endif
 
@@ -386,7 +386,7 @@ rpError lmmse_demosaic(int width, int height, const float * const *rawData, floa
 
         for (int rr = 4; rr < rr1 - 4; rr++) {
             int cc = 4 + (fc(cfarray, rr, 4) & 1);
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
             vfloat p1v, p2v, p3v, p4v, p5v, p6v, p7v, p8v, p9v, muv, vxv, vnv, xhv, vhv, xvv, vvv;
             const vfloat epsv = F2V(1e-7f);
             const vfloat ninev = F2V(9.f);
@@ -612,7 +612,7 @@ rpError lmmse_demosaic(int width, int height, const float * const *rawData, floa
             for (int c = 0; c < 3; c += 2) {
                 int d = c + 3 - (c == 0 ? 0 : 1);
                 int cc = 1;
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 
                 for (; cc < cc1 - 4; cc += 4) {
                     rix[d] = qix[d] + rr * cc1 + cc;

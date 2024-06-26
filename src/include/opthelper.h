@@ -24,7 +24,7 @@
 
     #define pow_F(a,b) (xexpf(b*xlogf(a)))
 
-    #ifdef __SSE2__
+    #if defined(__SSE2__) && defined(RTP_SSE2)
         #include "sleefsseavx.h"
     #endif
 

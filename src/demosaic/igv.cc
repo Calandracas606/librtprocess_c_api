@@ -41,7 +41,7 @@ using namespace librtprocess;
 ***/
 // Adapted to RawTherapee by Jacques Desmis 3/2013
 // SSE version by Ingo Weyrich 5/2013
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
 #define CLIPV(a) LIMV(a,zerov,c65535v)
 rpError igv_demosaic(int winw, int winh, const float * const *rawData, float **red, float **green, float **blue, const unsigned cfarray[2][2], const std::function<bool(double)> &setProgCancel)
 {

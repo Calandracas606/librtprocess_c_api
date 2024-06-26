@@ -68,7 +68,7 @@ void boxblur2(float** src, float** dst, float** temp, int startY, int startX, in
         }
     }
 
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
     //vertical blur
 #ifdef _OPENMP
     #pragma omp parallel

@@ -1008,7 +1008,7 @@ __inline float xsinf(float d) {
 }
 
 __inline float xcosf(float d) {
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
   // faster than scalar version
   return xcosf(_mm_set_ss(d))[0];
 #else
@@ -1038,7 +1038,7 @@ __inline float xcosf(float d) {
 }
 
 __inline float2 xsincosf(float d) {
-#ifdef __SSE2__
+#if defined(__SSE2__) && defined(RTP_SSE2)
   // faster than scalar version
     vfloat2 res = xsincosf(_mm_set_ss(d));
     return {res.x[0], res.y[0]};
